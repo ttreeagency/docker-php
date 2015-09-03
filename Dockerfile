@@ -6,23 +6,13 @@ ENV TTREE_VERSION=1.0.0 \
     FLOW_CONTEXT=Production \
     FLOW_REWRITEURLS=1
 
-# Configure locales
-RUN apt-get install -y locales && \
-	dpkg-reconfigure locales && \
-	locale-gen C.UTF-8 && \
-	/usr/sbin/update-locale LANG=C.UTF-8 && \
-	echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen && locale-gen
-
-# Set default locale for the environment
-ENV LC_ALL C.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US.UTF-8
-
+# Configure dotdeb repository
 RUN apt-get install -y wget curl && \
 	echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list && \
 	echo "deb-src http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list && \
 	wget https://www.dotdeb.org/dotdeb.gpg && apt-key add dotdeb.gpg
 
+# Install packages
 RUN apt-get update -y && \
 	apt-get install -y \
     git-core \
@@ -39,17 +29,20 @@ RUN apt-get update -y && \
     php5-mysqlnd \
     supervisor
 
+# Configure
 RUN sed -e 's/;daemonize = yes/daemonize = no/' -i /etc/php5/fpm/php-fpm.conf && \
 	sed -e 's/;listen\.owner/listen.owner/' -i /etc/php5/fpm/pool.d/www.conf && \
 	sed -e 's/;listen\.group/listen.group/' -i /etc/php5/fpm/pool.d/www.conf && \
 	echo "\ndaemon off;" >> /etc/nginx/nginx.conf
 
+# Add configuration
 ADD conf/vhost.conf /etc/nginx/sites-available/default
 ADD conf/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 
+# Install composer
 RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer && chmod +x /usr/local/bin/composer
 
 EXPOSE 80/tcp
