@@ -1,9 +1,8 @@
 FROM ttreeagency/base:latest
 MAINTAINER Dominique Feyer <dfeyer@ttree.ch>
 
-ENV DEBIAN_FRONTEND noninteractive \
-    TTREE_VERSION=1.0.0 \
-    TTREE_DATA_DIR="/data" \
+ENV TTREE_VERSION=1.0.0 \
+    TTREE_DATA_DIR=/data \
     FLOW_CONTEXT=Production \
     FLOW_REWRITEURLS=1
 
