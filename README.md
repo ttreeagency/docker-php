@@ -5,7 +5,6 @@ Official ttreeagency docker container for PHP application.
 This container contain the following software:
 
 - Nginx + PHP CLI/FPM (from Dotdeb respository)
-- NPM
 - GIT
 - Composer, the PHP package manager, automatically updated on container start
 
