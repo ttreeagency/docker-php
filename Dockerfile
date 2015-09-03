@@ -1,4 +1,4 @@
-FROM ttreeagency:base
+FROM ttreeagency/base:latest
 MAINTAINER Dominique Feyer <dfeyer@ttree.ch>
 
 ENV DEBIAN_FRONTEND noninteractive \
