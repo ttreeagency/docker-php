@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+function program_is_installed {
+  local return_=1
+  type $1 >/dev/null 2>&1 || { local return_=0; }
+  echo "$return_"
+}
+
 [[ -n $DEBUG_ENTRYPOINT ]] && set -x
 
 TTREE_DATA_DIR=${TTREE_DATA_DIR:-/data}
@@ -27,18 +33,21 @@ appInit () {
     echo "Update composer ..."
     composer self-update
   fi
-  npm cache clean >/dev/null
-  if [ "$BOWER_UPDATE" == "true" ]; then
-    echo "Update bower ..."
-    npm update -g bower
-  fi
-  if [ "$GULP_UPDATE" == "true" ]; then
-    echo "Update gulp ..."
-    npm update -g gulp
-  fi
-  if [ "$GRUNT_UPDATE" == "true" ]; then
-    echo "Update grunt ..."
-    npm update -g grunt-cli
+  local is_npm_installed=$(program_is_installed npm)
+  if [ $is_npm_installed == 1 ]; then
+    npm cache clean >/dev/null
+    if [ "$BOWER_UPDATE" == "true" ]; then
+      echo "Update bower ..."
+      npm update -g bower
+    fi
+    if [ "$GULP_UPDATE" == "true" ]; then
+      echo "Update gulp ..."
+      npm update -g gulp
+    fi
+    if [ "$GRUNT_UPDATE" == "true" ]; then
+      echo "Update grunt ..."
+      npm update -g grunt-cli
+    fi
   fi
   if [ ! -z "$GITHUB_TOKEN" ]; then
     echo "Setup Github oauth token ..."
