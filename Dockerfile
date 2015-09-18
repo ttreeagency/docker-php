@@ -38,6 +38,8 @@ RUN sed -e 's/;daemonize = yes/daemonize = no/' -i /etc/php5/fpm/php-fpm.conf &&
 # Add configuration
 ADD conf/vhost.conf /etc/nginx/sites-available/default
 ADD conf/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+ADD conf/php-ttree.ini /etc/php5/fpm/conf.d/999-php-ttree.ini
+ADD conf/php-ttree.ini /etc/php5/cli/conf.d/999-php-ttree.ini
 
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
