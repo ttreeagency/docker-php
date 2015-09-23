@@ -15,7 +15,10 @@ RUN apt-get install -y wget curl && \
 # Install packages
 RUN apt-get update -y && \
 	apt-get install -y \
+    build-essential \
     git-core \
+    ruby \
+    ruby-dev \
     nginx \
     php5 \
     php5-cli \
@@ -28,6 +31,10 @@ RUN apt-get update -y && \
     php5-fpm \
     php5-mysqlnd \
     supervisor
+
+ADD conf/gemrc /etc/gemrc
+RUN gem install sass && gem install compass
+
 
 # Configure
 RUN sed -e 's/;daemonize = yes/daemonize = no/' -i /etc/php5/fpm/php-fpm.conf && \
@@ -46,6 +53,9 @@ RUN chmod 755 /sbin/entrypoint.sh
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer && chmod +x /usr/local/bin/composer
+
+# Cleanup
+RUN apt-get -y purge build-essential ruby-dev
 
 EXPOSE 80/tcp
 
